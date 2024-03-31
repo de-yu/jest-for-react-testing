@@ -86,3 +86,53 @@ https://mswjs.io/docs/migrations/1.x-to-2.x/
       Request: { value: Request },
       Response: { value: Response },
     })
+
+
+setup-tests.ts    
+建立 env 中的參數    
+建立 msw     
+    
+    import * as dotenv from 'dotenv';
+    import { server } from './mocks/node';
+    
+    // dotenv config
+    process.env.NAME = 'NAME';
+    
+    // 建立msw server
+    beforeAll(() => {
+      server.listen()
+    })
+    
+    afterEach(() => {
+      server.resetHandlers()
+    })
+    
+    afterAll(() => {
+      server.close()
+    })
+
+node.ts
+建立 server
+
+    import { setupServer } from 'msw/node'
+    import { handlers } from './handlers'
+    
+    export const server = setupServer(...handlers)
+
+
+handler.ts
+設定 API response
+url 需使用完整的網址 https://.....
+只用 relative url 會攔截不到
+
+網路上的範例有使用 import { rest } from 'msw'    
+這是舊版的寫法 新版請使用 http
+
+
+    import { http, HttpResponse } from 'msw'
+    
+    export const handlers = [
+      http.post('url', () => HttpResponse.json({
+    
+      })
+    )]
